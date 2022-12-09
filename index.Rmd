@@ -11,7 +11,7 @@ output:
 <script>
   $(document).ready(function() {
     $head = $('#header');
-    $head.prepend('<img src="images/logo.png\" style=\"float: right;width: 400px;\"/>')
+    $head.prepend('<img src=\"logo.png\" style=\"float: right;width: 400px;\"/>')
   });
 </script>
 
@@ -30,8 +30,9 @@ suppressPackageStartupMessages(library(kableExtra))
 suppressPackageStartupMessages(library(gganimate))
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(Rcpp))
+suppressPackageStartupMessages(library(gifski))
 
-base        <- readxl::read_excel("Data/Base Motor Demografica 29 julio.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica 02112022.xls")
 
 
 ```
@@ -59,7 +60,7 @@ La demografía es el estudio científico de la población. Los demógrafos busca
 
 En este reporte serán definidas la mayoría de las medidas principales utilizadas en demografía.
 
-**Enumeración:** Refiere al número absoluto de una población o de cualquier evento demográfico que ocurre en una zona específica en un determinado período de tiempo. (Por ejemplo: La población de Montevideo según el censo de 1996 era 1.342.304 ; o  hubo 37.460 nacidos vivos en Uruguay en 2019). Las cifras brutas de los eventos demográficos forman la base para todos los demás análisis y estudios estadísticos.
+**Enumeración:** Refiere al número absoluto de una población o de cualquier evento demográfico que ocurre en una zona específica en un determinado período de tiempo. (Por ejemplo: La población de Montevideo según el censo de 1996 era 1.342.304 ; o  hubo 34.603 nacidos vivos en Uruguay en 2021). Las cifras brutas de los eventos demográficos forman la base para todos los demás análisis y estudios estadísticos.
   
 **Tasa:** Es la frecuencia de los eventos demográficos acaecidos en una población durante un determinado período de tiempo (normalmente un año) dividida entre la población “a riesgo” de sufrir el evento durante ese período de tiempo. Las tasas indican cuán común es que suceda algún evento. (Por ejemplo, en Uruguay hubo 14.1  nacidos vivos  por cada 1.000 habitantes en 2015). La mayoría de las tasas se expresan por 1.000 habitantes. Las tasas brutas son tasas calculadas para una población completa. Las tasas específicas son tasas computadas para un subgrupo específico, normalmente la población que más se aproxima a la población “a riesgo” de que sufra el evento. (Por ejemplo, la tasa global de fecundidad es el número de nacimientos por cada 1.000 mujeres entre las edades de 15 a 49 años de edad.) Por lo tanto, pueden haber tasas por edad, sexo, raza, ocupación y así sucesivamente. En la práctica, es más correcto denominar algunos cálculos como razón y no tasa.
 
@@ -347,7 +348,7 @@ La edad y el sexo son las características más básicas de una población. En c
 
 Una pirámide de población muestra gráficamente la composición de una población según la edad y el sexo. Las barras horizontales representan los números o las proporciones de hombres a mujeres para cada grupo. La suma de todos los grupos clasificados según la edad y el sexo dentro de la pirámide de población representa el 100 por cien de la población.
 Es posible que las pirámides se construyan por edades individuales o en grupos de edades (en general quinquenales)
-Una nueva cohorte nace cada año y aparece en la base de la pirámide. Así año a año las cohortes van escalando la pirámide.  Según envejecen las cohortes, es inevitable que pierdan integrantes debido a muerte, pero también es posible que se añadan o se pierdan integrantes debido a la migración.   Las pirámides proveen una gran cantidad de información acerca de una población. Por ejemplo, nótese que las mujeres constituyen la mayoría sustancial en los grupos de mayor edad. En la mayoría de los países, las mujeres viven más tiempo que los hombres. 
+Una nueva cohorte nace cada año y aparece en la base de la pirámide. Así año a año las cohortes van escalando la pirámide.  Según envejecen las cohortes, es inevitable que pierdan integrantes debido a muerte, pero también es posible que se añadan o se pierdan integrantes debido a la migración. Las pirámides proveen una gran cantidad de información acerca de una población. Por ejemplo, nótese que las mujeres constituyen la mayoría sustancial en los grupos de mayor edad. En la mayoría de los países, las mujeres viven más tiempo que los hombres. 
 Otro ejemplo, si se compara la barra inferior de la pirámide de edades quinquenales  de Uruguay 1963 (figura 1) con la de 2011 puede observarse que el porcentaje de la población que era menor de 5 año en 1963 (9.9%) decrece significativamente al 6.7% del 2011 (figura 5). La disminución del peso relativo de las edades menores en la estructura demográfica de un país da cuenta del envejecimiento poblacional. La disminución de la fecundidad y el aumento de las esperanza de vida conduce a que la priámide pase a transformarse paulatinamente en un rectángulo y llegado el caso en lo que se denomina pirámide invertida, donde los grupos de mayor edad tienen mayor peso relativo que los de menor edad.
 
 </div>
@@ -369,9 +370,6 @@ Otro ejemplo, si se compara la barra inferior de la pirámide de edades quinquen
 ```
 ##### Total país, `r periodo_formatted`
 </div>
-
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
 
 ```{r, out.width='100%'}
 #===============================================================================
@@ -418,6 +416,9 @@ tabla_piramide <- tabla_piramide %>% mutate(porcentaje_total = as.numeric(porcen
 #===============================================================================
 ```
 
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
 
 ```{r, out.width='100%'}
 #===============================================================================
@@ -425,87 +426,73 @@ tabla_piramide <- tabla_piramide %>% mutate(porcentaje_total = as.numeric(porcen
 g1 <- tabla_piramide %>% ggplot(
   aes(x = EDAD,
       y = porcentaje_total, fill = SEXO)) +
-  geom_col(position = "stack", alpha = 0.6) +
+  geom_col(position = "stack", alpha = 0.6) + 
   coord_flip() +
   scale_fill_manual(values = c(639, "#a1dd70"))+
   theme_minimal()+
   theme(legend.position = "bottom",
-        plot.caption = element_text(hjust = 0),
-        plot.title = element_text(
-          size = 12,
-          hjust = 0.5,
-          face = 'bold'
-        )) +
-  labs(title = 'Año - {closest_state}',x = "",
-       y ="") +
+        plot.caption = element_text(hjust = 0)) +
+  transition_time(as.numeric(FECHA)) +
+  #labs(title = paste("Año:", c("1963","1975","1985","1996","2011")),
+  #title = 'Año: {frame_time}',
+  labs(x = "Edad",
+       y ='Porcentaje de la población total') +
   guides(fill=guide_legend(title=""))
 
-  
-g1 <- g1 + 
-  transition_states(
-    FECHA,
-    transition_length = 1,
-    state_length = 2
-  ) + 
-  enter_fade() +
-  exit_fade() + 
-  ease_aes('cubic-in-out')
 
-anim_save("images/g1.gif", g1)
+anim_save("images/g1.gif", duration = 5, fps = 20, g1)
 
 #===============================================================================
 ```
 <div style="text-align: center">
-![](images/g1.gif)
+  ![](g1.gif)
 </div>
 
-### Descargar Tabla
-
-```{r}
-  t1 <-  tabla_piramide %>% 
-    mutate(VALOR = round(as.numeric(VALOR),1)) %>%
-    rename(ANIO = FECHA)
-  t1 <- t1 [,c("NOMINDICADOR","EDAD","SEXO","ANIO","VALOR")]
+###   Descargar Tabla
   
-  DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
-                                                             buttons = c('copy', 'csv', 'excel', 'print') )
-  ) 
+  ```{r}
+t1 <-  tabla_piramide %>% 
+  mutate(VALOR = round(as.numeric(VALOR),1)) %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","EDAD","SEXO","ANIO","VALOR")]
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                           buttons = c('copy', 'csv', 'excel', 'print') )
+) 
 ``` 
 ##
 
 
 <div style="text-align: left">
-<font size=2>
-
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Censos de Población del Instituto Nacional de Estadística (INE) y proyecciones de población Naciones Unidas (2019). <br />
-* Nota: Las proyecciones anteriores a 1996 no se encuentran empalmadas con la actualización realizada en 2014
+  <font size=2>
+  
+  Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Censos de Población del Instituto Nacional de Estadística (INE) y proyecciones de población Naciones Unidas (2019). <br />
+  * Nota: Las proyecciones anteriores a 1996 no se encuentran empalmadas con la actualización realizada en 2014
 
 </font>
-</div>
-
-<br />
-
-
-<div style="text-align: justify">
-
-La actualización de las estimaciones y proyecciones nacionales y departamentales de población fueron realizadas a partir de los resultados censales de 2011, los porcentajes de omisión censal (3.9%), el análisis de la evolución demográfica intercensal y una serie de supuestos sobre la evolución del nivel y la estructura de la fecundidad, de la mortalidad y de la migración (Se pueden descargar los valores anuales de los componentes del cambio demográfico [aquí](https://docs.google.com/spreadsheets/d/1fSICP7CrpDt2ozupv25jvTak-Kc0mdEn/edit?usp=sharing&ouid=112159509569239115081&rtpof=true&sd=true)).
+  </div>
+  
+  <br />
+  
+  
+  <div style="text-align: justify">
+  
+  La actualización de las estimaciones y proyecciones nacionales y departamentales de población fueron realizadas a partir de los resultados censales de 2011, los porcentajes de omisión censal (3.9%), el análisis de la evolución demográfica intercensal y una serie de supuestos sobre la evolución del nivel y la estructura de la fecundidad, de la mortalidad y de la migración (Se pueden descargar los valores anuales de los componentes del cambio demográfico [aquí](https://docs.google.com/spreadsheets/d/1fSICP7CrpDt2ozupv25jvTak-Kc0mdEn/edit?usp=sharing&ouid=112159509569239115081&rtpof=true&sd=true)).
 
 Las pirámides de población construidas a partir de la evolución de las estructura de la población por edad y sexo dan cuenta de la reducción de la base de la piramide (producto del descenso esperado de la natalidad) y el ensanchamiento de su cúspide, provocada por el aumento del peso relativo de las personas mayores (debidas principalmente al aumento proyectado de la esperanza de vida)
 
 </div>
-
-<br />
-
-
-
-<div style="text-align: center">
+  
+  <br />
+  
+  
+  
+  <div style="text-align: center">
 ##### **Estructura de la población por edad y sexo según proyecciones de población** 
 ##### Total país, 2011-2050
-</div>
+  </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
-```{r, out.width='100%'}
+  ```{r, out.width='100%'}
 #===============================================================================
 
 tabla_piramide_proy   <- readxl::read_excel("Data/Tabla_piramide_proyecciones.xlsx")
@@ -515,17 +502,22 @@ tabla_piramide_proy <- tabla_piramide_proy %>% mutate(porcentaje_total = VALOR*1
 tabla_piramide_proy <- tabla_piramide_proy %>% mutate(FECHA = as.factor(FECHA))
 tabla_piramide_proy <- tabla_piramide_proy %>% mutate(porcentaje_total = as.numeric(porcentaje_total))
 
-  
-  tabla_piramide_proy <- tabla_piramide_proy %>%
+
+tabla_piramide_proy <- tabla_piramide_proy %>%
   mutate(
     porcentaje_total = ifelse(
       SEXO == "mujeres",
       -porcentaje_total, porcentaje_total),
     poblacion = ifelse(SEXO == "mujeres", -VALOR, VALOR)
-    )
+  )
 
 #===============================================================================
 ```
+
+
+  
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -534,69 +526,54 @@ tabla_piramide_proy <- tabla_piramide_proy %>% mutate(porcentaje_total = as.nume
 g2 <- tabla_piramide_proy %>% ggplot(
   aes(x = EDAD,
       y = porcentaje_total, fill = SEXO)) +
-  geom_col(position = "stack", alpha = 0.6) +
+  geom_col(position = "stack", alpha = 0.6) + 
   coord_flip() +
   scale_fill_manual(values = c(639, "#a1dd70"))+
   theme_minimal()+
   theme(legend.position = "bottom",
-        plot.caption = element_text(hjust = 0),
-        plot.title = element_text(
-          size = 12,
-          hjust = 0.5,
-          face = 'bold'
-        )) +
-  labs(title = 'Año - {closest_state}',x = "",
+        plot.caption = element_text(hjust = 0)) +
+  transition_time(as.numeric(FECHA)) +
+  #labs(title = paste("Año:", c("1963","1975","1985","1996","2011")),
+  #title = 'Año: {frame_time}',
+  labs(x = "",
        y ="") +
   guides(fill=guide_legend(title=""))
 
-  
-g2 <- g2 + 
-  transition_states(
-    FECHA,
-    transition_length = 1,
-    state_length = 2
-  ) + 
-  enter_fade() +
-  exit_fade() + 
-  ease_aes('cubic-in-out')
 
-
-  
-anim_save("images/g2.gif", g2)
-
+anim_save("images/g2.gif", duration = 5, fps = 20, g2)
 
 #===============================================================================
 ```
 <div style="text-align: center">
-![](images/g2.gif)
+  ![](g2.gif)
 
 </div>
-
-
-### Descargar Tabla
-
-```{r}
-  t1 <-  tabla_piramide_proy %>% 
-    mutate(VALOR = round(as.numeric(VALOR),1)) %>%
-    rename(ANIO = FECHA)
-  t1 <- t1 [,c("NOMINDICADOR","EDAD","SEXO","ANIO","VALOR")]
   
-  DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
-                                                             buttons = c('copy', 'csv', 'excel', 'print') )
-  ) 
+  
+### Descargar Tabla
+  
+  ```{r}
+t1 <-  tabla_piramide_proy %>% 
+  mutate(VALOR = round(as.numeric(VALOR),1)) %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","EDAD","SEXO","ANIO","VALOR")]
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                           buttons = c('copy', 'csv', 'excel', 'print') )
+) 
 ``` 
 ##
 
 <div style="text-align: left">
-<font size=2>
-
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE) – Estimaciones y proyecciones de población (revisión 2013).
+  <font size=2>
+  
+  Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE) – Estimaciones y proyecciones de población (revisión 2013).
 
 </font>
-</div>
-
-<br />
-
+  </div>
+  
+  <br />
+  
 
 <div style="text-align: justify">
 
@@ -858,9 +835,9 @@ La tasa de natalidad no solo depende de la cantidad de hijos que tengan las muje
 
 
 <div style="text-align: center">
-##### **Estimación de cantidad de nacimientos** 
+##### **Cantidad de nacimientos** 
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Estimación de nacimientos",]
+  periodo <- base[base$NOMINDICADOR == "Nacimientos",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -878,13 +855,14 @@ La tasa de natalidad no solo depende de la cantidad de hijos que tengan las muje
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Estimación de nacimientos") %>%
+  base %>% filter(NOMINDICADOR == "Nacimientos") %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   ggplot(aes(x = FECHA, y = VALOR, fill="NOMINDICADOR")) +
   geom_bar(stat="identity", position="stack") +
   scale_fill_manual(values=c(639)) +
   ylim(0, 70000) +
-  xlim(1900, 2020) +
+  xlim(1995, 2022) +
+  scale_x_continuous(breaks=seq(1995, 2021, 5)) +
   theme_minimal() +
   theme(legend.position = "none")+
   labs(
@@ -904,7 +882,7 @@ ggplotly(g1) %>%
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Estimación de nacimientos" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Nacimientos" & DEPARTAMENTO_UY=="Total país") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -917,7 +895,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE). De 1900 a 1995 Proyecciones de población, versión 2005. Nota: Los años 1955 - 67 y 1989 - 92 son valores estimados. De 1996 a 2019, Estimaciones y Proyecciones de Población 1996-2050. Rev. 2013
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -956,7 +934,7 @@ g1 <-
       values = c ("#a1dd70"),
       labels = c("Tasa bruta de natalidad (por mil)")) +
     ylim(0, 50) +
-    xlim(1900, 2020) +
+    xlim(1900, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -989,7 +967,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE).De 1900 a 1995 Proyecciones de población, versión 2005. Nota: Los años 1955 - 67 y 1989 - 92 son valores estimados. De 1996 a 2019, Estimaciones y Proyecciones de Población 1996-2050. Rev. 2013
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1000,7 +978,7 @@ Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ins
 <div style="text-align: justify">
 La **tasa general de fecundidad** es una medida un poco más precisa que la tasa de natalidad porque la misma relaciona los nacimientos al grupo clasificado según la edad y el sexo con las mayores probabilidades de dar a luz (definido normalmente como mujeres de 15 a 49 años de edad.) Esta precisión permite eliminar las distorsiones que pueden resultar debido a distintos niveles de distribución por edad y sexo entre poblaciones. Por lo tanto, la tasa general de fecundidad sienta una mejor base que los cambios en la tasa bruta  de natalidad para comparar los niveles de fecundidad entre poblaciones.
 
-La evolución reciente  (1996-2019) muestra como a pesar del crecimiento del número de mujeres en edad fértil desciende el número de nacimientos, lo que conduce a confirmar que lo que está descendiendo es el número de hijos que tienen las mujeres
+La evolución reciente  (1996-2021) muestra que, a pesar del crecimiento del número de mujeres en edad fértil, desciende el número de nacimientos, lo que conduce a confirmar que lo que está descendiendo es el número de hijos que tienen las mujeres.
 </div>
 
 <br />
@@ -1026,16 +1004,16 @@ La evolución reciente  (1996-2019) muestra como a pesar del crecimiento del nú
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Estimación de nacimientos" |NOMINDICADOR == "Mujeres en edad fértil") %>%
+    base %>% filter(NOMINDICADOR == "Nacimientos" |NOMINDICADOR == "Mujeres en edad fértil") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
     geom_point(aes(color = NOMINDICADOR)) +
     scale_color_manual(
       values = c(639, "#a1dd70"),
-      labels = c("Estimación de nacimientos", "Mujeres en edad fértil")) +
+      labels = c("Nacimientos", "Mujeres en edad fértil")) +
     ylim(0, 900000) +
-    xlim(1996, 2020) +
+    xlim(1996, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1053,7 +1031,7 @@ ggplotly(g1) %>%
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Estimación de nacimientos" | NOMINDICADOR == "Mujeres en edad fértil") & DEPARTAMENTO_UY=="Total país" & FECHA>=1996)   %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Nacimientos" | NOMINDICADOR == "Mujeres en edad fértil") & DEPARTAMENTO_UY=="Total país" & FECHA>=1996)   %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1067,7 +1045,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1105,7 +1083,8 @@ g1 <-
       values = c (639),
       labels = c("Tasa General de Fecudidad")) +
     ylim(0, 100) +
-    xlim(1995, 2020) +
+    xlim(1995, 2022) +
+    scale_x_continuous(breaks=seq(1995, 2021, 5)) +
     theme_minimal() +
     labs(
       color = "",
@@ -1138,7 +1117,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1181,8 +1160,8 @@ g1 <-
   geom_line(aes(color = FECHA)) +
   geom_point(aes(color = FECHA)) +
   scale_color_manual(
-       values = c("gray88", "gray70", "gray60", "gray50", "gray40", "gray30"),
-       labels = c("1996", "2000", "2005", "2010", "2015", "2019")) +
+       values = c("black", "gray88", "gray70", "gray60", "gray50", "gray40", "gray30"),
+       labels = c("1996", "2000", "2005", "2010", "2015", "2019", "2021")) +
   ylim(0, 150) +
   xlim(10, 50) +
   theme_minimal() +
@@ -1218,7 +1197,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1262,7 +1241,7 @@ g1 <-
       values = c (639),
       labels = c("Tasa Global de Fecudidad")) +
     ylim(0, 3) +
-    xlim(1998, 2020) +
+    xlim(1998, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1296,7 +1275,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1313,7 +1292,7 @@ El descenso de la fecundidad adolescente es responsable de 1/3 del descenso de l
 <div style="text-align: center">
 ##### **Tasa de fecundidad adolescente (15-19 años)**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2020)" & base$DEPARTAMENTO_UY == "Total país",]
+  periodo <- base[base$NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2021)" & base$DEPARTAMENTO_UY == "Total país",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1329,7 +1308,7 @@ El descenso de la fecundidad adolescente es responsable de 1/3 del descenso de l
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2020)" & DEPARTAMENTO_UY == "Total país") %>%
+    base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2021)" & DEPARTAMENTO_UY == "Total país") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1338,7 +1317,7 @@ g1 <-
       values = c (639),
       labels = c("Tasa de fecundidad adolescente")) +
     ylim(0, 80) +
-    xlim(1996, 2020) +
+    xlim(1996, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1358,7 +1337,7 @@ ggplotly(g1) %>%
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2020)" & DEPARTAMENTO_UY == "Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2021)" & DEPARTAMENTO_UY == "Total país") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1372,7 +1351,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: MSP  y INE - Estimaciones y proyecciones de población (Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 
 </font>
@@ -1408,7 +1387,7 @@ g1 <-
       values = c (639),
       labels = c("Edad media de la fecundidad")) +
     ylim(0, 30) +
-    xlim(1998, 2020) +
+    xlim(1998, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1442,7 +1421,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Ministerio de Salud Pública
+Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública 
 
 
 </font>
@@ -1451,9 +1430,9 @@ Fuente: Ministerio de Salud Pública
 <br />
 
 <div style="text-align: center">
-##### **Porcentaje de madres menores de 20 años sobre el total de nacimientos**
+##### **Porcentaje de nacimientos de madres menores de 20 años sobre total de nacimientos**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Porcentaje de madres menores de 20 años sobre el total de nacimientos",]
+  periodo <- base[base$NOMINDICADOR == "Porcentaje de nacimientos de madres menores de 20 años sobre total de nacimientos",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1469,16 +1448,16 @@ Fuente: Ministerio de Salud Pública
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Porcentaje de madres menores de 20 años sobre el total de nacimientos" ) %>%
+    base %>% filter(NOMINDICADOR == "Porcentaje de nacimientos de madres menores de 20 años sobre total de nacimientos" ) %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
     geom_point(aes(color = NOMINDICADOR)) +
     scale_color_manual(
       values = c (639),
-      labels = c("Porcentaje de madres menores de 20 años sobre el total de nacimientos")) +
+      labels = c("Porcentaje de nacimientos de madres menores de 20 años sobre total de nacimientos")) +
     ylim(0, 30) +
-    xlim(1998, 2020) +
+    xlim(1998, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1498,7 +1477,7 @@ ggplotly(g1) %>%
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Porcentaje de madres menores de 20 años sobre el total de nacimientos") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Porcentaje de nacimientos de madres menores de 20 años sobre total de nacimientos") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1575,6 +1554,7 @@ g1 <-
       labels = c("Tasa bruta de mortalidad")) +
     ylim(0, 15) +
     xlim(1895, 2020) +
+    scale_x_continuous(breaks=seq(1895, 2021, 20)) +
     theme_minimal() +
     labs(
       color = "",
@@ -1608,7 +1588,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE) con datos del Ministerio de Salud Pública (MSP) y proyecciones de población.
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1640,7 +1620,7 @@ g1 <-
   geom_bar(stat="identity", position="stack") +
   scale_fill_manual(values=c(639)) +
   ylim(0, 40000) +
-  xlim(1900, 2020) +
+  xlim(1900, 2022) +
   theme_minimal() +
   theme(legend.position = "none")+
   labs(
@@ -1675,7 +1655,7 @@ ggplotly(g1) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Instituto Nacional de Estadística (INE) con datos del Ministerio de Salud Pública (MSP) y proyecciones de población.
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1685,7 +1665,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Inst
 <div style="text-align: center">
 ##### **Esperanza de vida al nacer de la población de ambos sexos**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)",]
+  periodo <- base[base$NOMINDICADOR == "Esperanza de vida al nacer",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1701,7 +1681,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Inst
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)") %>%
+base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer") %>%
   mutate(VALOR = as.numeric(VALOR)) %>% 
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 2, color = SEXO)) +
@@ -1711,7 +1691,8 @@ base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)") %>%
     labels = c("Total", "Varones", "Mujeres")
   ) +
   ylim(0, 90) +
-  xlim(1995, 2020) +
+  xlim(1995, 2025) +
+  scale_x_continuous(breaks=seq(1995, 2021, 5)) +
   
   theme_minimal() +
   labs(
@@ -1731,7 +1712,7 @@ ggplotly(g1) %>%
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer" & DEPARTAMENTO_UY=="Total país") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1804,7 +1785,7 @@ g1 <-
       values = c (639),
       labels = c("Saldo migratorio")) +
     ylim(-30000, 10000) +
-    xlim(1975, 2020) +
+    xlim(1975, 2022) +
     theme_minimal() +
     labs(
       color = "",
@@ -1872,22 +1853,23 @@ La inmigración internacional suele ser captada directamente por los censos de p
 ```{r, out.width='100%'}
 #===============================================================================
   g1 <- 
-    base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas") & DEPARTAMENTO_UY=="Total país") %>%
+    base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") & DEPARTAMENTO_UY=="Total país") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     mutate(RESIDENCIA = case_when(
   NOMINDICADOR =="Cantidad de residencias otorgadas" ~ "Total",
   NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas" ~ "Temporarias",
-  NOMINDICADOR =="Cantidad de resdencias definitivas otorgadas" ~ "Definitivas")) %>%
+  NOMINDICADOR =="Cantidad de resdencias definitivas otorgadas" ~ "Definitivas",
+  NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas" ~ "Fronterizas")) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = RESIDENCIA)) +
     geom_point(aes(color = RESIDENCIA)) +
     scale_color_manual(
-      values = c(639, "#a1dd70", "orangered"),
-      labels = c("Total", "Temporarias", "Definitivas")
+      values = c(639, "#a1dd70", "orangered", "darkorange"),
+      labels = c("Total", "Temporarias", "Definitivas", "Fronterizas")
     ) +
-    ylim(0, 4000) +
-    xlim(2013, 2019) +
-    
+    ylim(0, 7000) +
+    xlim(2013, 2022) +
+  scale_x_continuous(breaks=seq(2013, 2021, 1)) +
     theme_minimal() +
     labs(
       color = "",
@@ -1905,7 +1887,7 @@ La inmigración internacional suele ser captada directamente por los censos de p
 ### Descargar Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas") & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas") & DEPARTAMENTO_UY=="Total país"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1921,6 +1903,7 @@ La inmigración internacional suele ser captada directamente por los censos de p
 
 Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Dirección Nacional de Migración-Ministerio del Interior.
 
+Nota: A partir de 2020, además de las residencias temporarias y definitivas concedidas, se incluye la cantidad de residencias fronterizas. 
 </font>
 </div>
 
