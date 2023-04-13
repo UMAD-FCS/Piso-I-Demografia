@@ -1973,7 +1973,7 @@ La evolución del nivel de la fecundidad por edades simples da cuenta en primer 
 
 <br />
 
-## **Tasas específicas de fecunidad**
+## **Tasas específicas de fecundidad**
 
 <div style="text-align: center">
 ##### **Evolución de las tasas específicas de fecundidad por edad simple**
@@ -2266,7 +2266,7 @@ El descenso de la fecundidad adolescente es responsable de 1/3 del descenso de l
 
 <div style="text-align: center">
 
-## **Fecunidad adolescente**
+## **Fecundidad adolescente**
 
 
 ##### **Tasa de fecundidad adolescente (15-19 años)**
