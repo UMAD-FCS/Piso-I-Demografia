@@ -105,7 +105,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
     
     
 <div style="text-align: center">
-##### **Población total censada** 
+##### **Población total censada (en miles de personas)** 
 ```{r}
   periodo <- base[base$NOMINDICADOR == "Población total censada",]
   max<- max(periodo$FECHA)
@@ -126,7 +126,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
 #===============================================================================
   g1 <- 
     base %>% filter(NOMINDICADOR == "Población total censada") %>%
-    mutate(VALOR = as.numeric(VALOR)) %>% 
+    mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
     geom_point(aes(color = NOMINDICADOR)) +
@@ -134,7 +134,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
       values = c(639),
       labels = c("Cantidad")
     ) +
-    ylim(0, 4000000) +
+    ylim(0, 4000) +
     xlim(1850, 2025) +
     
     theme_minimal() +
@@ -157,7 +157,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
 
 ```{r}
   t1 <-   base %>% filter(NOMINDICADOR == "Población total censada") %>%
-    mutate(VALOR = round(as.numeric(VALOR),1)) %>%
+    mutate(VALOR = round(as.numeric(VALOR)/1000,1)) %>%
     rename(ANIO = FECHA)
   t1 <- t1 [,c("NOMINDICADOR","PAIS","ANIO","VALOR")]
   
@@ -201,7 +201,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
 
   G <- 
     base %>% filter(NOMINDICADOR == "Población total censada") %>%
-    mutate(VALOR = as.numeric(VALOR)) %>% 
+    mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
     geom_point(aes(color = NOMINDICADOR)) +
@@ -209,7 +209,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
       values = c(639),
       labels = c("Cantidad")
     ) +
-    ylim(0, 4000000) +
+    ylim(0, 4000) +
     xlim(1850, 2025) +
     
     theme_minimal() +
@@ -265,7 +265,7 @@ Cuanto mayor sea la calidad de las estadísticas vitales y migratorias, mayor se
 
 
 <div style="text-align: center">
-##### **Población censada y proyecciones de población** 
+##### **Población censada y proyecciones de población (en miles de personas)** 
 ##### Total país, 1950-2011 
 </div>
 
@@ -414,7 +414,7 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
 
 <div style="text-align: center">
 
-##### **Las proyecciones del Instituto Nacional de Estadística y de Naciones Unidas** 
+##### **Proyecciones del Instituto Nacional de Estadística y de Naciones Unidas (en miles de personas)** 
 ##### Total país, 1950-2100
 
 </div>
@@ -426,13 +426,13 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
 #===============================================================================
   g1 <- 
     base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "ambos sexos") %>%
-    mutate(VALOR = as.numeric(VALOR)) %>% 
+    mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
     scale_color_manual(
       values = c(639, "#a1dd70"),
       labels = c("Proy (NNUU 2019)", "Censos")) +
-    ylim(0, 4000000) +
+    ylim(0, 4000) +
     xlim(1950, 2100) +
     
     theme_minimal() +
@@ -455,7 +455,7 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
 
 ```{r}
   t1 <-  base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "ambos sexos") %>%
-    mutate(VALOR = round(as.numeric(VALOR),1)) %>%
+    mutate(VALOR = round(as.numeric(VALOR)/1000,1)) %>%
     rename(ANIO = FECHA)
   t1 <- t1 [,c("NOMINDICADOR","PAIS","ANIO","VALOR")]
   
@@ -501,7 +501,7 @@ G <-
     base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | 
                     NOMINDICADOR == "Proyecciones de población (NNUU, 2019)")
                     & SEXO == "ambos sexos") %>%
-    mutate(VALOR = as.numeric(VALOR)) %>% 
+    mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
     scale_color_manual(
