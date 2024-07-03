@@ -1537,7 +1537,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1675,7 +1675,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1822,7 +1822,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1959,7 +1959,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -1995,7 +1995,7 @@ La evolución del nivel de la fecundidad por edades simples da cuenta en primer 
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)"&FECHA==1996|FECHA==2000|FECHA==2005|FECHA==2010|FECHA==2015|FECHA==2019|FECHA==2022) %>%
+    base %>% filter(NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)"&FECHA==1996|FECHA==2000|FECHA==2005|FECHA==2010|FECHA==2015|FECHA==2019|FECHA==2023) %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   mutate(EDAD = as.numeric(EDAD)) %>%
   mutate(FECHA = as.factor(FECHA)) %>%
@@ -2004,7 +2004,7 @@ g1 <-
   geom_point(aes(color = FECHA)) +
   scale_color_manual(
        values = c("black", "gray88", "gray70", "gray60", "gray50", "gray40", "gray30"),
-       labels = c("1996", "2000", "2005", "2010", "2015", "2019", "2022")) +
+       labels = c("1996", "2000", "2005", "2010", "2015", "2019", "2023")) +
   ylim(0, 150) +
   xlim(10, 50) +
   theme_minimal() +
@@ -2106,7 +2106,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -2250,7 +2250,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 </font>
 </div>
@@ -2396,7 +2396,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
 
 
 </font>
@@ -2532,7 +2532,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública 
+Fuentes: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública 
 
 
 </font>
@@ -2666,7 +2666,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública
 
 
 </font>
@@ -2828,7 +2828,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública
 
 </font>
 </div>
@@ -2959,7 +2959,7 @@ ggplotly(G) %>%
 <div style="text-align: left">
 <font size=2>
 
-Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Ministerio de Salud Pública e Instituto Nacional de Estadísticas (Proyecciones de Población 1996-2025. Rev. 2013)
+Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Estadísticas vitales del Ministerio de Salud Pública 
 
 </font>
 </div>
