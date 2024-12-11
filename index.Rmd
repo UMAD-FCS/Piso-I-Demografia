@@ -266,7 +266,7 @@ Cuanto mayor sea la calidad de las estadísticas vitales y migratorias, mayor se
 
 <div style="text-align: center">
 ##### **Población censada y proyecciones de población (en miles de personas)** 
-##### Total país, 1950-2023 
+##### Total país, 1950-2020 
 </div>
 
 ### {.tabset .tabset-fade .tabset-pills}
