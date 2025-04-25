@@ -34,7 +34,7 @@ suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(Rcpp))
 suppressPackageStartupMessages(library(gifski))
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base_Motor_Demografica_rev2025_vf.xlsx")
 
 
 ```
@@ -135,7 +135,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
       labels = c("Cantidad")
     ) +
     ylim(0, 4000) +
-    xlim(1850, 2025) +
+#    xlim(1850, 2025) +
     
     theme_minimal() +
     labs(
@@ -193,7 +193,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -491,7 +491,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -575,9 +575,12 @@ Otro ejemplo, si se compara la barra inferior de la pirámide de edades quinquen
 
 ```{r, out.width='100%'}
 #===============================================================================
-tabla_piramide <- base %>% filter(NOMINDICADOR == "Población por edades quinquenales" & SEXO != "ambos sexos")
+tabla_piramide <- base %>% filter(NOMINDICADOR == "Población por edades quinquenales" & SEXO != "Total")
 tabla_piramide <- tabla_piramide %>% mutate(VALOR = as.numeric(VALOR))
 tabla_piramide <- tabla_piramide %>% mutate(EDAD = fct_inorder(EDAD))
+
+p2023 <- tabla_piramide %>% filter(FECHA == "2023")
+p2023 <- sum(p2023$VALOR)
 
 p2011 <- tabla_piramide %>% filter(FECHA == "2011")
 p2011 <- sum(p2011$VALOR)
@@ -600,7 +603,8 @@ tabla_piramide <- tabla_piramide %>% mutate(ptot = case_when(
   FECHA==1975 ~ p1975,
   FECHA==1985 ~ p1985,
   FECHA==1996 ~ p1996,
-  FECHA==2011 ~ p2011
+  FECHA==2011 ~ p2011,
+  FECHA==2023 ~ p2023
 ))
   
 tabla_piramide <- tabla_piramide %>% mutate(porcentaje_total = VALOR*100/ptot)
@@ -611,9 +615,9 @@ tabla_piramide <- tabla_piramide %>% mutate(porcentaje_total = as.numeric(porcen
   tabla_piramide <- tabla_piramide %>%
   mutate(
     porcentaje_total = ifelse(
-      SEXO == "mujeres",
+      SEXO == "Mujeres",
       -porcentaje_total, porcentaje_total),
-    poblacion = ifelse(SEXO == "mujeres", -VALOR, VALOR)
+    poblacion = ifelse(SEXO == "Mujeres", -VALOR, VALOR)
     )
 #===============================================================================
 ```
@@ -691,16 +695,19 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Gráfico ###
 
 tabla_piramide <- base %>% 
-  filter(NOMINDICADOR == "Población por edades quinquenales" & SEXO != "ambos sexos")
+  filter(NOMINDICADOR == "Población por edades quinquenales" & SEXO != "Total")
 tabla_piramide <- tabla_piramide %>% mutate(VALOR = as.numeric(VALOR))
 tabla_piramide <- tabla_piramide %>% mutate(EDAD = fct_inorder(EDAD))
+
+p2023 <- tabla_piramide %>% filter(FECHA == "2023")
+p2023 <- sum(p2023$VALOR)
 
 p2011 <- tabla_piramide %>% filter(FECHA == "2011")
 p2011 <- sum(p2011$VALOR)
@@ -723,7 +730,8 @@ tabla_piramide <- tabla_piramide %>% mutate(ptot = case_when(
   FECHA==1975 ~ p1975,
   FECHA==1985 ~ p1985,
   FECHA==1996 ~ p1996,
-  FECHA==2011 ~ p2011
+  FECHA==2011 ~ p2011,
+  FECHA==2023 ~ p2023
 ))
   
 tabla_piramide <- tabla_piramide %>% 
@@ -737,9 +745,9 @@ tabla_piramide <- tabla_piramide %>%
   tabla_piramide <- tabla_piramide %>%
   mutate(
     porcentaje_total = ifelse(
-      SEXO == "mujeres",
+      SEXO == "Mujeres",
       -porcentaje_total, porcentaje_total),
-    poblacion = ifelse(SEXO == "mujeres", -VALOR, VALOR)
+    poblacion = ifelse(SEXO == "Mujeres", -VALOR, VALOR)
     )
 
 G <- 
@@ -1004,7 +1012,7 @@ anim_save("images/G.gif", duration = 5, fps = 20, G)
 ```{r, out.width='100%'}
 #===============================================================================
   g1 <- 
-    base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total país") %>%
+    base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1033,7 +1041,7 @@ anim_save("images/G.gif", duration = 5, fps = 20, G)
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total país") %>%
+  t1 <- base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = round(as.numeric(VALOR),1)) %>%
     rename(ANIO = FECHA)
   t1 <- t1 [,c("NOMINDICADOR","PAIS","ANIO","VALOR")]
@@ -1070,14 +1078,14 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Gráfico ###
 
   G <- 
-    base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total país") %>%
+    base %>% filter((NOMINDICADOR == "Porcentaje de población menor de 15 años" | NOMINDICADOR == "Porcentaje de población de 15 a 64 años" | NOMINDICADOR =="Porcentaje de población de 65 y más años") & DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1206,7 +1214,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -1278,7 +1286,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en proy
 ```{r, out.width='100%'}
 #===============================================================================
   g1 <- 
-    base %>% filter((NOMINDICADOR == "Relación de dependencia total" | NOMINDICADOR == "Relación de dependencia de los niños" | NOMINDICADOR =="Relación de dependencia de la vejez") & DEPARTAMENTO_UY=="Total país") %>%
+    base %>% filter((NOMINDICADOR == "Relación de dependencia total" | NOMINDICADOR == "Relación de dependencia de los niños" | NOMINDICADOR =="Relación de dependencia de la vejez") & DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1306,7 +1314,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en proy
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Relación de dependencia total" | NOMINDICADOR == "Relación de dependencia de los niños" | NOMINDICADOR =="Relación de dependencia de la vejez") & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Relación de dependencia total" | NOMINDICADOR == "Relación de dependencia de los niños" | NOMINDICADOR =="Relación de dependencia de la vejez") & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1343,7 +1351,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -1353,7 +1361,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
     base %>% filter((NOMINDICADOR == "Relación de dependencia total" | 
                        NOMINDICADOR == "Relación de dependencia de los niños" | 
                        NOMINDICADOR =="Relación de dependencia de la vejez") & 
-                      DEPARTAMENTO_UY=="Total país") %>%
+                      DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1415,7 +1423,7 @@ La tasa de natalidad no solo depende de la cantidad de hijos que tengan las muje
 <div style="text-align: center">
 ##### **Cantidad de nacimientos** 
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Nacimientos",]
+  periodo <- base[base$NOMINDICADOR == "Cantidad de nacimientos",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1433,7 +1441,7 @@ La tasa de natalidad no solo depende de la cantidad de hijos que tengan las muje
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Nacimientos") %>%
+  base %>% filter(NOMINDICADOR == "Cantidad de nacimientos") %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   ggplot(aes(x = FECHA, y = VALOR, fill="NOMINDICADOR")) +
   geom_bar(stat="identity", position="stack") +
@@ -1460,7 +1468,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Nacimientos" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Cantidad de nacimientos" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1497,14 +1505,14 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Gráfico ###
 
 G <- 
-  base %>% filter(NOMINDICADOR == "Nacimientos") %>%
+  base %>% filter(NOMINDICADOR == "Cantidad de nacimientos") %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   ggplot(aes(x = FECHA, y = VALOR, fill="NOMINDICADOR")) +
   geom_bar(stat="identity", position="stack") +
@@ -1596,7 +1604,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Tasa bruta de natalidad (por mil)" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Tasa bruta de natalidad (por mil)" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1633,7 +1641,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -1695,7 +1703,7 @@ La evolución reciente muestra que, a pesar del crecimiento del número de mujer
 <div style="text-align: center">
 ##### **Cantidad de mujeres en edad fértil y nacimientos**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Mujeres en edad fértil",]
+  periodo <- base[base$NOMINDICADOR == "Cantidad de mujeres en edad fértil",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1713,7 +1721,7 @@ La evolución reciente muestra que, a pesar del crecimiento del número de mujer
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Nacimientos" |NOMINDICADOR == "Mujeres en edad fértil") %>%
+    base %>% filter(NOMINDICADOR == "Cantidad de nacimientos" |NOMINDICADOR == "Cantidad de mujeres en edad fértil") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1740,7 +1748,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Nacimientos" | NOMINDICADOR == "Mujeres en edad fértil") & DEPARTAMENTO_UY=="Total país" & FECHA>=1996)   %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Cantidad de nacimientos" | NOMINDICADOR == "Cantidad de mujeres en edad fértil") & DEPARTAMENTO_UY=="Total" & FECHA>=1996)   %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1777,7 +1785,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -1785,8 +1793,8 @@ base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
 
 
 G <- 
-    base %>% filter(NOMINDICADOR == "Nacimientos" |
-                      NOMINDICADOR == "Mujeres en edad fértil") %>%
+    base %>% filter(NOMINDICADOR == "Cantidad de nacimientos" |
+                      NOMINDICADOR == "Cantidad de mujeres en edad fértil") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, 
                y = VALOR)) +
@@ -1880,7 +1888,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Tasa General de Fecudidad" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Tasa General de Fecudidad" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1917,7 +1925,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2025,7 +2033,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)") & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)") & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -2063,7 +2071,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2209,7 +2217,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2271,7 +2279,7 @@ El descenso de la fecundidad adolescente es responsable de una parte relevante d
 
 ##### **Tasa de fecundidad adolescente (15-19 años)**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & base$DEPARTAMENTO_UY == "Total país"&is.na(base$FECHA)==F,]
+  periodo <- base[base$NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & base$DEPARTAMENTO_UY == "Total"&is.na(base$FECHA)==F,]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -2287,7 +2295,7 @@ El descenso de la fecundidad adolescente es responsable de una parte relevante d
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & DEPARTAMENTO_UY == "Total país") %>%
+    base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & DEPARTAMENTO_UY == "Total") %>%
  mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de fecundidad adolescente observada  (por mil) por departamento" ~ "Tasa de fecundidad adolescente")) %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
@@ -2317,7 +2325,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & DEPARTAMENTO_UY == "Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento" & DEPARTAMENTO_UY == "Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -2354,7 +2362,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2363,7 +2371,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
 
 G <- 
     base %>% 
-  filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2021)" & DEPARTAMENTO_UY == "Total país") %>%
+  filter(NOMINDICADOR == "Tasa de fecundidad adolescente observada  (por mil) por departamento (1996-2021)" & DEPARTAMENTO_UY == "Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -2491,7 +2499,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2626,7 +2634,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2787,7 +2795,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -2840,7 +2848,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 <div style="text-align: center">
 ##### **Cantidad de defunciones**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Defunciones",]
+  periodo <- base[base$NOMINDICADOR == "Cantidad de defunciones",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -2856,7 +2864,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Defunciones") %>%
+  base %>% filter(NOMINDICADOR == "Cantidad de defunciones") %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   ggplot(aes(x = FECHA, y = VALOR, fill="NOMINDICADOR")) +
   geom_bar(stat="identity", position="stack") +
@@ -2883,7 +2891,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Defunciones") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Cantidad de defunciones") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -2920,14 +2928,14 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Gráfico ###
 
 G <- 
-  base %>% filter(NOMINDICADOR == "Defunciones") %>%
+  base %>% filter(NOMINDICADOR == "Cantidad de defunciones") %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   ggplot(aes(x = FECHA, y = VALOR, fill="NOMINDICADOR")) +
   geom_bar(stat="identity", position="stack") +
@@ -2971,7 +2979,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 <div style="text-align: center">
 ##### **Esperanza de vida al nacer de la población de ambos sexos**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Esperanza de vida al nacer",]
+  periodo <- base[base$NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -2987,7 +2995,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer") %>%
+base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)") %>%
   mutate(VALOR = as.numeric(VALOR)) %>% 
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 2, color = SEXO)) +
@@ -2997,8 +3005,8 @@ base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer") %>%
     labels = c("Total", "Varones", "Mujeres")
   ) +
   ylim(0, 90) +
-  xlim(1995, 2025) +
-  scale_x_continuous(breaks=seq(1995, 2025, 5)) +
+  xlim(1995, 2050) +
+  scale_x_continuous(breaks=seq(1995, 2025, 10)) +
   
   theme_minimal() +
   labs(
@@ -3018,7 +3026,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -3055,14 +3063,14 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Gráfico ###
 
 G <- 
-base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer") %>%
+base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)") %>%
   mutate(VALOR = as.numeric(VALOR)) %>% 
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 2, color = SEXO)) +
@@ -3180,7 +3188,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Saldo migratorio" & DEPARTAMENTO_UY=="Total país") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Saldo migratorio" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -3217,7 +3225,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -3296,7 +3304,7 @@ La inmigración internacional suele ser captada directamente por los censos de p
 ```{r, out.width='100%'}
 #===============================================================================
   g1 <- 
-    base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") & DEPARTAMENTO_UY=="Total país") %>%
+    base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") & DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     mutate(RESIDENCIA = case_when(
   NOMINDICADOR =="Cantidad de residencias otorgadas" ~ "Total",
@@ -3330,7 +3338,7 @@ La inmigración internacional suele ser captada directamente por los censos de p
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas") & DEPARTAMENTO_UY=="Total país"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") %>% 
+  t1 <- base %>% filter((NOMINDICADOR == "Cantidad de residencias otorgadas" | NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas") & DEPARTAMENTO_UY=="Total"|NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -3367,7 +3375,7 @@ library(gifski)
 
 ### Carga de base ###
 
-base        <- readxl::read_excel("Data/Base Motor Demografica.xls")
+base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -3380,7 +3388,7 @@ G <-
             NOMINDICADOR == "Cantidad de resdencias definitivas otorgadas" | 
             NOMINDICADOR =="Cantidad de resdencias temporarias otorgadas"|
             NOMINDICADOR=="Cantidad de residencias fronterizas otorgadas") & 
-           DEPARTAMENTO_UY=="Total país") %>%
+           DEPARTAMENTO_UY=="Total") %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     mutate(RESIDENCIA = case_when(
   NOMINDICADOR =="Cantidad de residencias otorgadas" ~ "Total",
