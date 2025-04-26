@@ -36,7 +36,6 @@ suppressPackageStartupMessages(library(gifski))
 
 base        <- readxl::read_excel("Data/Base_Motor_Demografica_rev2025_vf.xlsx")
 
-
 ```
 
 <br />
@@ -135,7 +134,7 @@ Las cifras proporcionadas por los censos pueden adolescer de errores (omisiones 
       labels = c("Cantidad")
     ) +
     ylim(0, 4000) +
-#    xlim(1850, 2025) +
+    xlim(1850, 2025) +
     
     theme_minimal() +
     labs(
@@ -425,7 +424,7 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
 ```{r, out.width='100%'}
 #===============================================================================
   g1 <- 
-    base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "ambos sexos") %>%
+    base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "Total") %>%
     mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
@@ -434,7 +433,6 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
       labels = c("Proy (NNUU 2019)", "Censos")) +
     ylim(0, 4000) +
     xlim(1950, 2100) +
-    
     theme_minimal() +
     labs(
       color = "",
@@ -454,7 +452,7 @@ De acuerdo a las proyecciones vigentes, el 2049 será el último año en el cual
 #### Tabla
 
 ```{r}
-  t1 <-  base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "ambos sexos") %>%
+  t1 <-  base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | NOMINDICADOR == "Proyecciones de población (NNUU, 2019)") & SEXO == "Total") %>%
     mutate(VALOR = round(as.numeric(VALOR)/1000,1)) %>%
     rename(ANIO = FECHA)
   t1 <- t1 [,c("NOMINDICADOR","PAIS","ANIO","VALOR")]
@@ -500,7 +498,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 G <- 
     base %>% filter((NOMINDICADOR == "Proyecciones de población (INE)" | 
                     NOMINDICADOR == "Proyecciones de población (NNUU, 2019)")
-                    & SEXO == "ambos sexos") %>%
+                    & SEXO == "Total") %>%
     mutate(VALOR = as.numeric(VALOR)/1000) %>% 
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(group = 1, color = NOMINDICADOR)) +
@@ -1455,8 +1453,7 @@ g1 <-
     title = "",
     x = "",
     y = "") +
-  scale_x_continuous(breaks = c(1900, 1910,1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)
-                     )
+  scale_x_continuous(breaks = c(1900, 1910,1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 ggplotly(g1) %>% 
     config(displayModeBar = F) %>%
@@ -1840,7 +1837,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 <div style="text-align: center">
 ##### **Tasa general de fecundidad**
 ```{r}
-  periodo <- base[base$NOMINDICADOR == "Tasa General de Fecudidad",]
+  periodo <- base[base$NOMINDICADOR == "Tasa General de Fecundidad",]
   max<- max(periodo$FECHA)
   min<- min(periodo$FECHA)
   periodo <- c(min," - ", max)
@@ -1859,7 +1856,7 @@ Fuente: Unidad de Métodos y Acceso a Datos (UMAD) (FCS-UdelaR) con base en Esta
 #===============================================================================
 
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Tasa General de Fecudidad" ) %>%
+    base %>% filter(NOMINDICADOR == "Tasa General de Fecundidad" ) %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -1888,7 +1885,7 @@ ggplotly(g1) %>%
 #### Tabla
 
 ```{r}
-  t1 <- base %>% filter(NOMINDICADOR == "Tasa General de Fecudidad" & DEPARTAMENTO_UY=="Total") %>% 
+  t1 <- base %>% filter(NOMINDICADOR == "Tasa General de Fecundidad" & DEPARTAMENTO_UY=="Total") %>% 
     mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
     rename(ANIO = FECHA)
   
@@ -1933,7 +1930,7 @@ base        <- readxl::read_excel("Data/Base Motor Demografica_rev2025_vf.xlsx")
 
 
 G <- 
-    base %>% filter(NOMINDICADOR == "Tasa General de Fecudidad" ) %>%
+    base %>% filter(NOMINDICADOR == "Tasa General de Fecundidad" ) %>%
     mutate(VALOR = as.numeric(VALOR)) %>%
     ggplot(aes(x = FECHA, y = VALOR)) +
     geom_line(aes(color = NOMINDICADOR)) +
@@ -2877,8 +2874,7 @@ g1 <-
     title = "",
     x = "",
     y = "") +
-  scale_x_continuous(breaks = c(1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)
-  )
+  scale_x_continuous(breaks = c(1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 ggplotly(g1) %>% 
     config(displayModeBar = F) %>%
@@ -2948,8 +2944,7 @@ G <-
     title = "",
     x = "",
     y = "") +
-  scale_x_continuous(breaks = c(1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020)
-  )
+  scale_x_continuous(breaks = c(1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020))
 
 ggplotly(G) %>% 
     config(displayModeBar = F) %>%
@@ -3006,7 +3001,7 @@ base %>% filter(NOMINDICADOR == "Esperanza de vida al nacer (1996-2050)") %>%
   ) +
   ylim(0, 90) +
   xlim(1995, 2050) +
-  scale_x_continuous(breaks=seq(1995, 2025, 10)) +
+  scale_x_continuous(breaks=seq(1995, 2050, 10)) +
   
   theme_minimal() +
   labs(
