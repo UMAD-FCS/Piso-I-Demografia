@@ -34,7 +34,7 @@ suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(Rcpp))
 suppressPackageStartupMessages(library(gifski))
 
-base        <- readxl::read_excel("Data/Base_Motor_Demografica_rev2025_vf.xlsx")
+base        <- readxl::read_excel("Data/Base Motor Demografica.xlsx")
 
 ```
 
@@ -2000,7 +2000,7 @@ La evolución del nivel de la fecundidad por edades simples da cuenta en primer 
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-    base %>% filter(NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)"&FECHA==1996|FECHA==2000|FECHA==2005|FECHA==2010|FECHA==2015|FECHA==2019|FECHA==2023) %>%
+    base %>% filter(NOMINDICADOR == "Tasas Específicas de Fecundidad por edad simple (por mil)"&FECHA==1996|FECHA==2000|FECHA==2005|FECHA==2010|FECHA==2015|FECHA==2019|FECHA==2024) %>%
   mutate(VALOR = as.numeric(VALOR)) %>%
   mutate(EDAD = as.numeric(EDAD)) %>%
   mutate(FECHA = as.factor(FECHA)) %>%
@@ -3313,7 +3313,7 @@ La inmigración internacional suele ser captada directamente por los censos de p
       values = c(639, "#a1dd70", "orangered", "darkorange"),
       labels = c("Total", "Temporarias", "Definitivas", "Fronterizas")
     ) +
-    ylim(0, 10000) +
+    ylim(0, 20000) +
     xlim(2013, max) +
   scale_x_continuous(breaks=seq(2013, max, 1)) +
     theme_minimal() +
